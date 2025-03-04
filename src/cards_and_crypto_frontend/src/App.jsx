@@ -66,24 +66,29 @@ function App() {
       // Handle the bet result
       if (result.won) {
         // Player won - multiply bet by payout
-        toast.success(`You won ${betAmount * result.payout} ETH!`, {
+        const betAmountBigInt = BigInt(Math.floor(betAmount * 1000)); // Convert to BigInt with 3 decimal precision
+        const winnings = Number(betAmountBigInt * BigInt(result.payout)) / 1000; // Convert back to number with 3 decimal precision
+        toast.success(`You won ${winnings} DOGE!`, {
           position: isMobile ? "top-center" : "top-right"
         });
         // In a real app, we would transfer funds here
       } else {
         // Player lost - deduct the bet amount
-        toast.error(`You lost ${betAmount} ETH!`, {
+        toast.error(`You lost ${betAmount} DOGE!`, {
           position: isMobile ? "top-center" : "top-right"
         });
         // In a real app, we would transfer funds here
       }
       
     } catch (error) {
-      toast.error(`Error playing game: ${error.message}`, {
+      console.error('Game error:', error);
+      toast.error(`Error playing game: ${error.message || 'Unknown error occurred'}`, {
         position: isMobile ? "top-center" : "top-right"
       });
-      console.error(error);
+      // Reset game state on error
+      setGameResult(null);
     } finally {
+      // Always reset isPlaying state, even if there was an error
       setIsPlaying(false);
     }
   }
@@ -124,7 +129,7 @@ function App() {
     <main className="app-container">
       <ToastContainer position={isMobile ? "top-center" : "top-right"} autoClose={5000} />
       
-      <h1 style={{ fontFamily: 'Comic Sans MS, cursive' }}>DOGE CASIO</h1>
+      <h1 style={{ fontFamily: 'Comic Sans MS, cursive' }}>DOGE CASINO</h1>
       <p className="description">
         Place a bet on color, suit, or value and draw a card.<br />
         Win based on your bet: Color (2x), Suit (4x), Value (13x)
@@ -141,9 +146,9 @@ function App() {
                 {getCardImage(gameResult.card)}
                 <div className="result-info">
                   {gameResult.won ? (
-                    <div className="won">You won {betAmount * gameResult.payout} ETH!</div>
+                    <div className="won">You won {Number(BigInt(Math.floor(betAmount * 1000)) * BigInt(gameResult.payout)) / 1000} DOGE!</div>
                   ) : (
-                    <div className="lost">You lost {betAmount} ETH!</div>
+                    <div className="lost">You lost {betAmount} DOGE!</div>
                   )}
                 </div>
               </>
@@ -198,7 +203,7 @@ function App() {
             </select>
           </div>
           
-          <label htmlFor="bet-amount">Bet Amount (ETH):</label>
+          <label htmlFor="bet-amount">Bet Amount (DOGE):</label>
           <input
             id="bet-amount"
             type="number"
@@ -227,9 +232,9 @@ function App() {
                 {getCardImage(gameResult.card)}
                 <div className="result-info">
                   {gameResult.won ? (
-                    <div className="won">You won {betAmount * gameResult.payout} ETH!</div>
+                    <div className="won">You won {Number(BigInt(Math.floor(betAmount * 1000)) * BigInt(gameResult.payout)) / 1000} DOGE!</div>
                   ) : (
-                    <div className="lost">You lost {betAmount} ETH!</div>
+                    <div className="lost">You lost {betAmount} DOGE!</div>
                   )}
                 </div>
               </>
