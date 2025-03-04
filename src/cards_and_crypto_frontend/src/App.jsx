@@ -129,7 +129,10 @@ function App() {
     <main className="app-container">
       <ToastContainer position={isMobile ? "top-center" : "top-right"} autoClose={5000} />
       
-      <h1 style={{ fontFamily: 'Comic Sans MS, cursive' }}>DOGE CASINO</h1>
+      <div className="title-container">
+        <img src="/doge.jpeg" alt="DOGE" className="doge-logo" />
+        <h1 style={{ fontFamily: 'Comic Sans MS, cursive' }}>DOGE CASINO</h1>
+      </div>
       <p className="description">
         Place a bet on color, suit, or value and draw a card.<br />
         Win based on your bet: Color (2x), Suit (4x), Value (13x)
