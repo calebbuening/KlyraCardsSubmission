@@ -1,4 +1,82 @@
-# `cards_and_crypto`
+# Cards & Crypto
+
+A simple Ethereum gambling game built on the Internet Computer Protocol (ICP). Draw a card: if it's black, you double your money; if it's red, you lose your bet.
+
+## Overview
+
+This project demonstrates how to build a decentralized application that:
+1. Connects to an Ethereum wallet via MetaMask
+2. Allows users to place bets using ETH
+3. Uses a random card drawing mechanism
+4. Determines win/loss based on the card color
+
+## Prerequisites
+
+- Node.js (v16 or higher)
+- DFINITY Canister SDK (`dfx`)
+- MetaMask browser extension
+
+## Setup and Installation
+
+1. Clone the repository:
+   ```
+   git clone [repository-url]
+   cd cards_and_crypto
+   ```
+
+2. Install dependencies:
+   ```
+   npm install
+   cd src/cards_and_crypto_frontend
+   npm install
+   ```
+
+3. Start the local ICP network:
+   ```
+   dfx start --background
+   ```
+
+4. Deploy the canisters:
+   ```
+   dfx deploy
+   ```
+
+5. Once deployed, you should see a URL for the frontend. Open it in a browser with MetaMask installed.
+
+## How to Play
+
+1. Connect your MetaMask wallet by clicking the "Connect Ethereum Wallet" button.
+2. Set your bet amount (in ETH).
+3. Click "Draw Card" to play.
+4. If the card is black (clubs or spades), you win twice your bet amount.
+5. If the card is red (hearts or diamonds), you lose your bet amount.
+
+## Technical Details
+
+### Frontend
+
+- Built with React
+- Uses ethers.js for Ethereum wallet integration
+- Communicates with the ICP backend for random card generation
+
+### Backend
+
+- Written in Motoko
+- Implements pseudo-random card drawing logic
+- Handles game outcome determination
+
+### Note About Implementation
+
+This is a demonstration project. In a production environment, you would want to:
+
+1. Implement a more secure random number generation mechanism
+2. Add proper transaction handling for transferring ETH
+3. Include additional security measures for wallet integration
+4. Implement more robust error handling
+
+## License
+
+MIT
 
 Welcome to your new `cards_and_crypto` project and to the Internet Computer development community. By default, creating a new project adds this README and some template files to your project directory. You can edit these template files to customize your project and to include your own code to speed up the development cycle.
 
