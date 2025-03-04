@@ -7,73 +7,14 @@ import './App.css';
 
 function App() {
   // States
-  const [account, setAccount] = useState('');
-  const [balance, setBalance] = useState(0);
   const [betAmount, setBetAmount] = useState(0.01);
   const [isPlaying, setIsPlaying] = useState(false);
   const [gameResult, setGameResult] = useState(null);
-  const [provider, setProvider] = useState(null);
-  const [signer, setSigner] = useState(null);
-
-  // Connect to MetaMask wallet
-  async function connectWallet() {
-    try {
-      if (window.ethereum) {
-        // Request account access
-        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-        
-        // Create ethers provider and signer
-        const ethProvider = new ethers.providers.Web3Provider(window.ethereum);
-        const ethSigner = ethProvider.getSigner();
-        
-        // Get account balance
-        const accountBalance = await ethProvider.getBalance(accounts[0]);
-        const balanceInEth = ethers.utils.formatEther(accountBalance);
-        
-        setAccount(accounts[0]);
-        setBalance(parseFloat(balanceInEth).toFixed(4));
-        setProvider(ethProvider);
-        setSigner(ethSigner);
-        
-        toast.success('Wallet connected successfully!');
-        
-        // Listen for account changes
-        window.ethereum.on('accountsChanged', (newAccounts) => {
-          setAccount(newAccounts[0]);
-          updateBalance(newAccounts[0], ethProvider);
-        });
-      } else {
-        toast.error('MetaMask not detected! Please install MetaMask extension.');
-      }
-    } catch (error) {
-      toast.error(`Error connecting wallet: ${error.message}`);
-      console.error(error);
-    }
-  }
-  
-  // Update account balance
-  async function updateBalance(address, provider) {
-    if (address && provider) {
-      const accountBalance = await provider.getBalance(address);
-      const balanceInEth = ethers.utils.formatEther(accountBalance);
-      setBalance(parseFloat(balanceInEth).toFixed(4));
-    }
-  }
 
   // Play the game
   async function playGame() {
-    if (!account) {
-      toast.error('Please connect your wallet first!');
-      return;
-    }
-
     if (betAmount <= 0) {
       toast.error('Bet amount must be greater than 0!');
-      return;
-    }
-
-    if (betAmount > balance) {
-      toast.error('Insufficient funds!');
       return;
     }
 
@@ -97,9 +38,6 @@ function App() {
         toast.error(`You lost ${betAmount} ETH!`);
         // In a real app, we would transfer funds here
       }
-      
-      // Update balance after game
-      await updateBalance(account, provider);
       
     } catch (error) {
       toast.error(`Error playing game: ${error.message}`);
@@ -135,24 +73,11 @@ function App() {
     <main className="app-container">
       <ToastContainer position="top-right" autoClose={5000} />
       
-      <h1>Cards & Crypto</h1>
+      <h1 style={{ fontFamily: 'Comic Sans MS, cursive' }}>DOGE CASIO</h1>
       <p className="description">
-        Connect your Ethereum wallet, place a bet, and draw a card.<br />
+        Place a bet and draw a card.<br />
         Black card = double your money, Red card = lose your bet.
       </p>
-      
-      <div className="wallet-section">
-        {!account ? (
-          <button className="connect-button" onClick={connectWallet}>
-            Connect Ethereum Wallet
-          </button>
-        ) : (
-          <div className="wallet-info">
-            <p>Connected: {account.substring(0, 6)}...{account.substring(account.length - 4)}</p>
-            <p>Balance: {balance} ETH</p>
-          </div>
-        )}
-      </div>
       
       <div className="game-section">
         <div className="bet-controls">
@@ -169,7 +94,7 @@ function App() {
           <button 
             className="play-button" 
             onClick={playGame} 
-            disabled={!account || isPlaying}
+            disabled={isPlaying}
           >
             {isPlaying ? 'Drawing Card...' : 'Draw Card'}
           </button>
