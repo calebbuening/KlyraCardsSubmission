@@ -145,11 +145,6 @@ function App() {
               <>
                 {getCardImage(gameResult.card)}
                 <div className="result-info">
-                  {gameResult.won ? (
-                    <div className="won">You won {Number(BigInt(Math.floor(betAmount * 1000)) * BigInt(gameResult.payout)) / 1000} DOGE!</div>
-                  ) : (
-                    <div className="lost">You lost {betAmount} DOGE!</div>
-                  )}
                 </div>
               </>
             ) : (
@@ -231,11 +226,6 @@ function App() {
               <>
                 {getCardImage(gameResult.card)}
                 <div className="result-info">
-                  {gameResult.won ? (
-                    <div className="won">You won {Number(BigInt(Math.floor(betAmount * 1000)) * BigInt(gameResult.payout)) / 1000} DOGE!</div>
-                  ) : (
-                    <div className="lost">You lost {betAmount} DOGE!</div>
-                  )}
                 </div>
               </>
             ) : (
