@@ -156,6 +156,9 @@ actor {
   
   // Get a card from qrandom API
   public func fetchRandomCard() : async Card {
+    // For debugging
+    Debug.print("Attempting to fetch from qrandom.io...");
+    
     try {
       // Make the HTTP request to qrandom API
       let requestHeaders = [
@@ -171,23 +174,32 @@ actor {
         transform = null;
       };
       
+      // Debug print before call
+      Debug.print("Making HTTP request to: " # QRANDOM_URL);
+      
       // Call the qrandom API
       let response = await ic.http_request(request_args);
+      
+      // Debug print after call
+      Debug.print("HTTP response received with status: " # Nat.toText(response.status));
       
       // Convert response body to text
       let response_body_bytes = response.body;
       let response_body_text = Text.decodeUtf8(Blob.fromArray(response_body_bytes));
       
-      // Store the response for debugging
-      switch (response_body_text) {
-        case (?text) { lastCardResult := ?text; };
-        case (null) { lastCardResult := ?"Error decoding response"; };
-      };
-      
-      // Debug print the response
+      // Process the response
       let responseText = switch (response_body_text) {
-        case (?text) { text };
-        case (null) { "Error decoding response" };
+        case (?text) { 
+          // Store for debugging
+          lastCardResult := ?text;
+          Debug.print("Response body received, length: " # Nat.toText(text.size()));
+          text;
+        };
+        case (null) { 
+          lastCardResult := ?"Error decoding response"; 
+          Debug.print("Error decoding response body");
+          "Error decoding response";
+        };
       };
       
       Debug.print("QRandom API Response: " # responseText);
@@ -224,13 +236,18 @@ actor {
       };
     } catch (error) {
       // If the API call fails, use a fallback random card
-      Debug.print("Error calling QRandom API: " # Error.message(error));
+      let errorMsg = "Error calling QRandom API: " # Error.message(error);
+      Debug.print(errorMsg);
+      lastCardResult := ?errorMsg;
       
       // Use time-based random as fallback
       seed := seed + 1 + Int.abs(Time.now());
       let index = seed % fallbackDeck.size();
       
-      return fallbackDeck[index];
+      let fallbackCard = fallbackDeck[index];
+      Debug.print("Using fallback card: " # fallbackCard.color # " " # fallbackCard.suit # " " # fallbackCard.value);
+      
+      return fallbackCard;
     };
   };
   
