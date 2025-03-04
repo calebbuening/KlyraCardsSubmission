@@ -2,7 +2,7 @@
 
 DEPLOYED ONLINE AT [https://uyk65-niaaa-aaaah-ara4q-cai.icp0.io/](https://uyk65-niaaa-aaaah-ara4q-cai.icp0.io/)
 
-*Originally named cards and crypto*
+*Originally named cards and crypto. NOT mobile friendly as of now.*
 
 A simple gambling game (built in like two hours or something) deployed on the Internet Computer Protocol (ICP) taking advantage of DOGE on the Ethereum network.
 
