@@ -1,0 +1,26 @@
+{
+  "canisters": {
+    "cards_and_crypto_backend": {
+      "main": "src/cards_and_crypto_backend/main.mo",
+      "type": "motoko"
+    },
+    "cards_and_crypto_frontend": {
+      "dependencies": [
+        "cards_and_crypto_backend"
+      ],
+      "source": [
+        "src/cards_and_crypto_frontend/dist"
+      ],
+      "type": "assets",
+      "workspace": "cards_and_crypto_frontend"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}
