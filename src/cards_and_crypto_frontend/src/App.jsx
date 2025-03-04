@@ -12,6 +12,7 @@ function App() {
   const [gameResult, setGameResult] = useState(null);
   const [betType, setBetType] = useState('color'); // color, suit, or value
   const [betValue, setBetValue] = useState('black'); // default to black
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 600);
 
   // Available bet options based on bet type
   const betOptions = {
@@ -19,6 +20,18 @@ function App() {
     suit: ['hearts', 'diamonds', 'clubs', 'spades'],
     value: ['A', 'K', 'Q', 'J', '10', '9', '8', '7', '6', '5', '4', '3', '2']
   };
+
+  // Check if viewport is mobile on resize
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 600);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   // Handle bet type change
   const handleBetTypeChange = (newType) => {
@@ -53,16 +66,22 @@ function App() {
       // Handle the bet result
       if (result.won) {
         // Player won - multiply bet by payout
-        toast.success(`You won ${betAmount * result.payout} ETH!`);
+        toast.success(`You won ${betAmount * result.payout} ETH!`, {
+          position: isMobile ? "top-center" : "top-right"
+        });
         // In a real app, we would transfer funds here
       } else {
         // Player lost - deduct the bet amount
-        toast.error(`You lost ${betAmount} ETH!`);
+        toast.error(`You lost ${betAmount} ETH!`, {
+          position: isMobile ? "top-center" : "top-right"
+        });
         // In a real app, we would transfer funds here
       }
       
     } catch (error) {
-      toast.error(`Error playing game: ${error.message}`);
+      toast.error(`Error playing game: ${error.message}`, {
+        position: isMobile ? "top-center" : "top-right"
+      });
       console.error(error);
     } finally {
       setIsPlaying(false);
@@ -103,7 +122,7 @@ function App() {
 
   return (
     <main className="app-container">
-      <ToastContainer position="top-right" autoClose={5000} />
+      <ToastContainer position={isMobile ? "top-center" : "top-right"} autoClose={5000} />
       
       <h1 style={{ fontFamily: 'Comic Sans MS, cursive' }}>DOGE CASIO</h1>
       <p className="description">
@@ -112,6 +131,30 @@ function App() {
       </p>
       
       <div className="game-section">
+        {/* Card display is shown first on mobile for better UX */}
+        {isMobile && (
+          <div className="card-display">
+            {isPlaying ? (
+              <div className="loading-card">Drawing...</div>
+            ) : gameResult ? (
+              <>
+                {getCardImage(gameResult.card)}
+                <div className="result-info">
+                  {gameResult.won ? (
+                    <div className="won">You won {betAmount * gameResult.payout} ETH!</div>
+                  ) : (
+                    <div className="lost">You lost {betAmount} ETH!</div>
+                  )}
+                </div>
+              </>
+            ) : (
+              <div className="card card-back">
+                <div className="card-back-design"></div>
+              </div>
+            )}
+          </div>
+        )}
+
         <div className="bet-controls">
           <div className="bet-type-selection">
             <label>Bet Type:</label>
@@ -174,26 +217,29 @@ function App() {
           </button>
         </div>
         
-        <div className="card-display">
-          {isPlaying ? (
-            <div className="loading-card">Drawing...</div>
-          ) : gameResult ? (
-            <>
-              {getCardImage(gameResult.card)}
-              <div className="result-info">
-                {gameResult.won ? (
-                  <div className="won">You won {betAmount * gameResult.payout} ETH!</div>
-                ) : (
-                  <div className="lost">You lost {betAmount} ETH!</div>
-                )}
+        {/* Card display is shown last on desktop */}
+        {!isMobile && (
+          <div className="card-display">
+            {isPlaying ? (
+              <div className="loading-card">Drawing...</div>
+            ) : gameResult ? (
+              <>
+                {getCardImage(gameResult.card)}
+                <div className="result-info">
+                  {gameResult.won ? (
+                    <div className="won">You won {betAmount * gameResult.payout} ETH!</div>
+                  ) : (
+                    <div className="lost">You lost {betAmount} ETH!</div>
+                  )}
+                </div>
+              </>
+            ) : (
+              <div className="card card-back">
+                <div className="card-back-design"></div>
               </div>
-            </>
-          ) : (
-            <div className="card card-back">
-              <div className="card-back-design"></div>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        )}
       </div>
     </main>
   );
