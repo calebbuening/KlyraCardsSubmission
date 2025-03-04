@@ -2,7 +2,9 @@
   "canisters": {
     "cards_and_crypto_backend": {
       "main": "src/cards_and_crypto_backend/main.mo",
-      "type": "motoko"
+      "type": "motoko",
+      "dependencies": [
+      ]
     },
     "cards_and_crypto_frontend": {
       "dependencies": [
@@ -22,5 +24,15 @@
     }
   },
   "output_env_file": ".env",
-  "version": 1
+  "version": 1,
+  "external": {
+    "http": {
+      "url": "https://github.com/aviate-labs/motoko-http",
+      "version": "v0.1.0"
+    },
+    "json": {
+      "url": "https://github.com/aviate-labs/motoko-json",
+      "version": "v0.1.0"
+    }
+  }
 }
