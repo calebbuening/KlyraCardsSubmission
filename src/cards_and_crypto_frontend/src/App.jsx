@@ -106,9 +106,6 @@ function App() {
           ) : gameResult ? (
             <>
               {getCardImage(gameResult.card)}
-              <div className={`result ${gameResult.won ? 'win' : 'lose'}`}>
-                {gameResult.won ? `WIN! (${betAmount * 2} ETH)` : `LOSE! (${betAmount} ETH)`}
-              </div>
             </>
           ) : (
             <div className="card card-back">
