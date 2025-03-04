@@ -1,20 +1,20 @@
-# Cards & Crypto
+# DOGE CASINO
 
-A simple Ethereum gambling game built on the Internet Computer Protocol (ICP). Draw a card: if it's black, you double your money; if it's red, you lose your bet.
+*Originally named cards and crypto*
+
+A simple gambling game (built in like two hours or something) deployed on the Internet Computer Protocol (ICP) taking advantage of DOGE on the Ethereum network.
 
 ## Overview
 
-This project demonstrates how to build a decentralized application that:
-1. Connects to an Ethereum wallet via MetaMask
-2. Allows users to place bets using ETH
-3. Uses a random card drawing mechanism
-4. Determines win/loss based on the card color
+This project demonstrates a decentralized application that:
+1. Uses a random card drawing mechanism.
+2. Determines payout based on the color, suit, or number.
+3. Has further potential for implementation with DOGE.
 
 ## Prerequisites
 
 - Node.js (v16 or higher)
 - DFINITY Canister SDK (`dfx`)
-- MetaMask browser extension
 
 ## Setup and Installation
 
@@ -41,97 +41,24 @@ This project demonstrates how to build a decentralized application that:
    dfx deploy
    ```
 
-5. Once deployed, you should see a URL for the frontend. Open it in a browser with MetaMask installed.
+5. Once deployed, you should see a URL for the frontend. Open it in a browser.
 
 ## How to Play
 
-1. Connect your MetaMask wallet by clicking the "Connect Ethereum Wallet" button.
-2. Set your bet amount (in ETH).
+2. Set your bet amount (in DOGE).
 3. Click "Draw Card" to play.
-4. If the card is black (clubs or spades), you win twice your bet amount.
-5. If the card is red (hearts or diamonds), you lose your bet amount.
+4. Win the payouts describe on the page
 
 ## Technical Details
 
 ### Frontend
 
 - Built with React
-- Uses ethers.js for Ethereum wallet integration
-- Communicates with the ICP backend for random card generation
+- Uses ethers.js for Ethereum wallet integration when transferring DOGE (not implemented)
+- Communicates with the ICP backend for card generation (backend communicating with qrandom)
 
 ### Backend
 
 - Written in Motoko
 - Implements pseudo-random card drawing logic
 - Handles game outcome determination
-
-### Note About Implementation
-
-This is a demonstration project. In a production environment, you would want to:
-
-1. Implement a more secure random number generation mechanism
-2. Add proper transaction handling for transferring ETH
-3. Include additional security measures for wallet integration
-4. Implement more robust error handling
-
-## License
-
-MIT
-
-Welcome to your new `cards_and_crypto` project and to the Internet Computer development community. By default, creating a new project adds this README and some template files to your project directory. You can edit these template files to customize your project and to include your own code to speed up the development cycle.
-
-To get started, you might want to explore the project directory structure and the default configuration file. Working with this project in your development environment will not affect any production deployment or identity tokens.
-
-To learn more before you start working with `cards_and_crypto`, see the following documentation available online:
-
-- [Quick Start](https://internetcomputer.org/docs/current/developer-docs/setup/deploy-locally)
-- [SDK Developer Tools](https://internetcomputer.org/docs/current/developer-docs/setup/install)
-- [Motoko Programming Language Guide](https://internetcomputer.org/docs/current/motoko/main/motoko)
-- [Motoko Language Quick Reference](https://internetcomputer.org/docs/current/motoko/main/language-manual)
-
-If you want to start working on your project right away, you might want to try the following commands:
-
-```bash
-cd cards_and_crypto/
-dfx help
-dfx canister --help
-```
-
-## Running the project locally
-
-If you want to test your project locally, you can use the following commands:
-
-```bash
-# Starts the replica, running in the background
-dfx start --background
-
-# Deploys your canisters to the replica and generates your candid interface
-dfx deploy
-```
-
-Once the job completes, your application will be available at `http://localhost:4943?canisterId={asset_canister_id}`.
-
-If you have made changes to your backend canister, you can generate a new candid interface with
-
-```bash
-npm run generate
-```
-
-at any time. This is recommended before starting the frontend development server, and will be run automatically any time you run `dfx deploy`.
-
-If you are making frontend changes, you can start a development server with
-
-```bash
-npm start
-```
-
-Which will start a server at `http://localhost:8080`, proxying API requests to the replica at port 4943.
-
-### Note on frontend environment variables
-
-If you are hosting frontend code somewhere without using DFX, you may need to make one of the following adjustments to ensure your project does not fetch the root key in production:
-
-- set`DFX_NETWORK` to `ic` if you are using Webpack
-- use your own preferred method to replace `process.env.DFX_NETWORK` in the autogenerated declarations
-  - Setting `canisters -> {asset_canister_id} -> declarations -> env_override to a string` in `dfx.json` will replace `process.env.DFX_NETWORK` with the string in the autogenerated declarations
-- Write your own `createActor` constructor
