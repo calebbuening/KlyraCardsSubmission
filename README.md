@@ -64,3 +64,4 @@ This project demonstrates a decentralized application that:
 - Written in Motoko
 - Implements pseudo-random card drawing logic
 - Handles game outcome determination
+- NOTE: When running locally, the backend uses a fake card generation api, because the real one is only accessible via http once deployed on the ICP network. The real deployment online uses the api.
