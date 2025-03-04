@@ -10,6 +10,22 @@ function App() {
   const [betAmount, setBetAmount] = useState(0.01);
   const [isPlaying, setIsPlaying] = useState(false);
   const [gameResult, setGameResult] = useState(null);
+  const [betType, setBetType] = useState('color'); // color, suit, or value
+  const [betValue, setBetValue] = useState('black'); // default to black
+
+  // Available bet options based on bet type
+  const betOptions = {
+    color: ['red', 'black'],
+    suit: ['hearts', 'diamonds', 'clubs', 'spades'],
+    value: ['A', 'K', 'Q', 'J', '10', '9', '8', '7', '6', '5', '4', '3', '2']
+  };
+
+  // Handle bet type change
+  const handleBetTypeChange = (newType) => {
+    setBetType(newType);
+    // Reset bet value to first option of the new type
+    setBetValue(betOptions[newType][0]);
+  };
 
   // Play the game
   async function playGame() {
@@ -22,16 +38,22 @@ function App() {
       setIsPlaying(true);
       setGameResult(null);
       
-      // Call the backend to play the game
-      const result = await cards_and_crypto_backend.playGame();
+      // Prepare the bet object
+      const bet = {
+        betType: { [betType]: null }, // Using variant syntax for Motoko
+        betValue: betValue
+      };
+      
+      // Call the updated backend to play the game with the bet
+      const result = await cards_and_crypto_backend.playGame(bet);
       
       // Update the UI with the result
       setGameResult(result);
       
-      // Handle the bet
+      // Handle the bet result
       if (result.won) {
-        // Player won - double the bet amount
-        toast.success(`You won ${betAmount * 2} ETH!`);
+        // Player won - multiply bet by payout
+        toast.success(`You won ${betAmount * result.payout} ETH!`);
         // In a real app, we would transfer funds here
       } else {
         // Player lost - deduct the bet amount
@@ -69,18 +91,70 @@ function App() {
     }
   }
 
+  // Get payout multiplier based on bet type
+  function getPayoutMultiplier() {
+    switch (betType) {
+      case 'color': return '2x';
+      case 'suit': return '4x';
+      case 'value': return '13x';
+      default: return '';
+    }
+  }
+
   return (
     <main className="app-container">
       <ToastContainer position="top-right" autoClose={5000} />
       
       <h1 style={{ fontFamily: 'Comic Sans MS, cursive' }}>DOGE CASIO</h1>
       <p className="description">
-        Place a bet and draw a card.<br />
-        Black card = double your money, Red card = lose your bet.
+        Place a bet on color, suit, or value and draw a card.<br />
+        Win based on your bet: Color (2x), Suit (4x), Value (13x)
       </p>
       
       <div className="game-section">
         <div className="bet-controls">
+          <div className="bet-type-selection">
+            <label>Bet Type:</label>
+            <div className="bet-type-buttons">
+              <button 
+                className={betType === 'color' ? 'active' : ''} 
+                onClick={() => handleBetTypeChange('color')}
+                disabled={isPlaying}
+              >
+                Color (2x)
+              </button>
+              <button 
+                className={betType === 'suit' ? 'active' : ''} 
+                onClick={() => handleBetTypeChange('suit')}
+                disabled={isPlaying}
+              >
+                Suit (4x)
+              </button>
+              <button 
+                className={betType === 'value' ? 'active' : ''} 
+                onClick={() => handleBetTypeChange('value')}
+                disabled={isPlaying}
+              >
+                Value (13x)
+              </button>
+            </div>
+          </div>
+          
+          <div className="bet-value-selection">
+            <label>Betting on:</label>
+            <select 
+              value={betValue} 
+              onChange={(e) => setBetValue(e.target.value)}
+              disabled={isPlaying}
+            >
+              {betOptions[betType].map(option => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          </div>
+          
           <label htmlFor="bet-amount">Bet Amount (ETH):</label>
           <input
             id="bet-amount"
@@ -106,6 +180,13 @@ function App() {
           ) : gameResult ? (
             <>
               {getCardImage(gameResult.card)}
+              <div className="result-info">
+                {gameResult.won ? (
+                  <div className="won">You won {betAmount * gameResult.payout} ETH!</div>
+                ) : (
+                  <div className="lost">You lost {betAmount} ETH!</div>
+                )}
+              </div>
             </>
           ) : (
             <div className="card card-back">

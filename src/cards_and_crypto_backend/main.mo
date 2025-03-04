@@ -24,6 +24,27 @@ actor {
     value : Text; // "2" through "10", "J", "Q", "K", "A"
   };
 
+  // Bet types
+  public type BetType = {
+    #color;
+    #suit;
+    #value;
+  };
+
+  // Bet structure
+  public type Bet = {
+    betType : BetType;
+    betValue : Text; // "red", "hearts", "A", etc.
+  };
+
+  // Game result type
+  public type GameResult = {
+    won : Bool;
+    card : Card;
+    bet : Bet;
+    payout : Nat; // Multiplier for the bet
+  };
+
   // Fallback deck in case the API call fails
   private let fallbackDeck : [Card] = [
     // Hearts (red)
@@ -263,22 +284,64 @@ actor {
     fallbackDeck[index];
   };
   
-  // Play the game
-  public func playGame() : async {
-    won : Bool;
-    card : Card;
-  } {
+  // Calculate payout based on bet type
+  private func calculatePayout(bet : Bet, won : Bool) : Nat {
+    if (not won) {
+      return 0; // No payout for losing bets
+    };
+    
+    switch (bet.betType) {
+      case (#color) { 
+        // 1:1 payout for color (2 options)
+        return 2;
+      };
+      case (#suit) { 
+        // 3:1 payout for suit (4 options)
+        return 4;
+      };
+      case (#value) { 
+        // 12:1 payout for value (13 options)
+        return 13;
+      };
+    };
+  };
+  
+  // Play the game with a bet
+  public func playGame(bet : Bet) : async GameResult {
     // Get a random card from the QRandom API
     let card = await fetchRandomCard();
-    let won = card.color == "black";
+    
+    // Determine if the player won based on their bet
+    let won = switch (bet.betType) {
+      case (#color) { card.color == bet.betValue };
+      case (#suit) { card.suit == bet.betValue };
+      case (#value) { card.value == bet.betValue };
+    };
+    
+    // Calculate payout
+    let payout = calculatePayout(bet, won);
     
     // Debug: Print the game result
     Debug.print("Game Result: " # (if won { "WON" } else { "LOST" }));
     Debug.print("Card: " # card.color # " " # card.suit # " " # card.value);
+    Debug.print("Bet: " # debug_show(bet.betType) # " on " # bet.betValue);
     
     return {
       won;
       card;
+      bet;
+      payout;
     };
   };
+  
+  // For backward compatibility and simple play
+  public func simpleBet(betValue : Text) : async GameResult {
+    let bet : Bet = {
+      betType = #color;
+      betValue = betValue;
+    };
+    
+    await playGame(bet);
+  };
 };
+
