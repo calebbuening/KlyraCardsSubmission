@@ -1,5 +1,7 @@
 # DOGE CASINO
 
+DEPLOYED ONLINE AT [https://uyk65-niaaa-aaaah-ara4q-cai.icp0.io/](https://uyk65-niaaa-aaaah-ara4q-cai.icp0.io/)
+
 *Originally named cards and crypto*
 
 A simple gambling game (built in like two hours or something) deployed on the Internet Computer Protocol (ICP) taking advantage of DOGE on the Ethereum network.
