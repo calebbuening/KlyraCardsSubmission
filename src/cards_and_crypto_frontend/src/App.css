@@ -311,7 +311,7 @@ h1 {
   position: relative;
   overflow: hidden;
   border: 5px solid white;
-  background-image: url('/doge.jpeg');
+  background-image: url('/actualdog.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
